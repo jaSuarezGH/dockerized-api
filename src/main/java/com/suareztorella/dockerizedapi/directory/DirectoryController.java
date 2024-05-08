@@ -29,11 +29,11 @@ public class DirectoryController {
     }
 
     @GetMapping("/{id}")
-    public Directory getDirectoryById(@PathVariable Long id) {
+    public Object getDirectoryById(@PathVariable Long id) {
         try {
             return directoryRepository.findById(id).get();
         } catch (NoSuchElementException e) {
-            return null;
+            return "No se encontro usuario con id " + id;
         }
     }
 
@@ -43,43 +43,52 @@ public class DirectoryController {
     }
 
     @PutMapping(path = "/{id}")
-    public Directory modifyDirectory(@PathVariable("id") Long id, @RequestBody Directory directory) {
+    public Object modifyDirectory(@PathVariable("id") Long id, @RequestBody Directory directory) {
 
-        // Declare the new modified directory
-        Directory moded_directory = new Directory();
-        moded_directory.setId(id);
-        moded_directory.setName(directory.getName());
-        moded_directory.setEmails(directory.getEmails());
+        try {
+            directoryRepository.findById(id).get();
 
-        return directoryRepository.save(moded_directory);
+            // Declare the new modified directory
+            Directory moded_directory = new Directory();
+            moded_directory.setId(id);
+            moded_directory.setName(directory.getName());
+            moded_directory.setEmails(directory.getEmails());
+
+            return directoryRepository.save(moded_directory);
+        } catch (NoSuchElementException e) {
+            return "No se encontro usuario con id " + id;
+        }
+
     }
 
     @PatchMapping(path = "/{id}")
     public Directory modifyPartiallyDirectory(@PathVariable("id") Long id, @RequestBody Directory directory) {
 
-        // Declare the new modified directory
-        Directory moded_directory = new Directory();
-        moded_directory.setId(id);
-        moded_directory.setName(directory.getName());
-        moded_directory.setEmails(directory.getEmails());
+        try {
+            directoryRepository.findById(id).get();
+            
+            // Declare the new modified directory
+            Directory moded_directory = new Directory();
+            moded_directory.setId(id);
+            moded_directory.setName(directory.getName());
+            moded_directory.setEmails(directory.getEmails());
 
-        return directoryRepository.save(moded_directory);
+            return directoryRepository.save(moded_directory);
+        } catch (NoSuchElementException e) {
+            return "No se encontro usuario con id " + id;
+        }
     }
 
     @DeleteMapping(path = "/{id}")
     public String deleteDirectoryById(@PathVariable("id") Long id) {
 
-        this.directoryRepository.deleteById(id);
+        try {
+            directoryRepository.findById(id).get();
+            this.directoryRepository.deleteById(id);
 
-        return "eliminated " + id;
-        /*
-         * if (this.extractedDataService.obtainDataById(id).isPresent()) {
-         * this.extractedDataService.deleteDataById(id);
-         * return "Deleted data with id " + id;
-         * } else {
-         * return "Could not delete data with id " + id +
-         * " (probably id does not exist)";
-         * }
-         */
+            return "eliminated " + id;
+        } catch (NoSuchElementException e) {
+            return "No se encontro usuario con id " + id;
+        }
     }
 }
