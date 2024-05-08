@@ -33,7 +33,7 @@ public class DirectoryController {
         try {
             return directoryRepository.findById(id).get();
         } catch (NoSuchElementException e) {
-            return "No se encontro usuario con id " + id;
+            return "No se encontro directorio con id " + id;
         }
     }
 
@@ -56,17 +56,17 @@ public class DirectoryController {
 
             return directoryRepository.save(moded_directory);
         } catch (NoSuchElementException e) {
-            return "No se encontro usuario con id " + id;
+            return "No se encontro directorio con id " + id;
         }
 
     }
 
     @PatchMapping(path = "/{id}")
-    public Directory modifyPartiallyDirectory(@PathVariable("id") Long id, @RequestBody Directory directory) {
+    public Object modifyPartiallyDirectory(@PathVariable("id") Long id, @RequestBody Directory directory) {
 
         try {
             directoryRepository.findById(id).get();
-            
+
             // Declare the new modified directory
             Directory moded_directory = new Directory();
             moded_directory.setId(id);
@@ -75,20 +75,20 @@ public class DirectoryController {
 
             return directoryRepository.save(moded_directory);
         } catch (NoSuchElementException e) {
-            return "No se encontro usuario con id " + id;
+            return "No se encontro directorio con id " + id;
         }
     }
 
     @DeleteMapping(path = "/{id}")
-    public String deleteDirectoryById(@PathVariable("id") Long id) {
+    public Object deleteDirectoryById(@PathVariable("id") Long id) {
 
         try {
             directoryRepository.findById(id).get();
             this.directoryRepository.deleteById(id);
 
-            return "eliminated " + id;
+            return "Eliminado directorio con id " + id;
         } catch (NoSuchElementException e) {
-            return "No se encontro usuario con id " + id;
+            return "No se encontro directorio con id " + id;
         }
     }
 }
