@@ -13,6 +13,8 @@ services:
       - DATABASE_PASSWORD=postgres
     depends_on:
       - postgresql_db
+    networks:
+      - suareztorella-network
   postgresql_db:
     container_name: postgresql_db
     image: postgres:12
@@ -24,5 +26,10 @@ services:
       POSTGRES_DB: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - suareztorella-network
 volumes:
   postgres_data:
+networks:
+  suareztorella-network:
+    driver: bridge
