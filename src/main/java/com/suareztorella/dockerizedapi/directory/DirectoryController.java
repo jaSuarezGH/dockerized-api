@@ -31,79 +31,54 @@ public class DirectoryController {
     @GetMapping
     public Object getAllDirectories(@RequestParam(name = "page") int page) {
 
+        // Verificar si la página es menor que 1
+        if (page < 1) {
+            return "El número de página no puede ser menor que 1";
+        }    
         // variables de configuracion de paginado
         int itemsPerPage = 4;
-        int aux = 0;
-
+        int startIndex = (page - 1) * itemsPerPage;
+    
         // Definir objeto de respuesta
         Paginable paginable = new Paginable();
-
+    
         // Consultar todos los directorios
         List<Directory> directories = directoryRepository.findAll();
-
+    
         // Definir una lista de resultado
         List<Directory> result = new ArrayList<Directory>();
-
+    
         // Definir el tamaño total
         paginable.setCount(directories.size());
-
-        if (page == 1) {
-            // definir un index auxiliar
-            aux = 0;
-
-            // mostrar los itemsPerPage desde el index adecuado
-            for (int i = 0; i < itemsPerPage; i++) {
-                if (directories.size() > aux) {
-                    result.add(directories.get(aux));
-                    aux++;
-                }
-            }
-
-            // Definir el siguiente
-            if (directories.size() > itemsPerPage * page) {
-                paginable.setNext("http://localhost:8080/directories?page=" + (page + 1));
-            } else {
-                paginable.setNext("No existe");
-            }
-
-            // Definir el previo
-            paginable.setPrevious("No existe");
-
-            // Agregar el result al objeto de respuesta
-            paginable.setResults(result);
-
-        } else {
-            if (directories.size() > itemsPerPage * (page - 1)) {
-
-                // definir un index auxiliar
-                aux = itemsPerPage * (page - 1);
-
-                // mostrar los itemsPerPage desde el index adecuado
-                for (int i = 0; i < itemsPerPage; i++) {
-                    if (directories.size() > aux) {
-                        result.add(directories.get(aux));
-                        aux++;
-                    }
-                }
-
-                // Definir el siguiente
-                if (directories.size() > itemsPerPage * page) {
-                    paginable.setNext("http://localhost:8080/directories?page=" + (page + 1));
-                } else {
-                    paginable.setNext("No existe");
-                }
-
-                // Definir el previo
-                paginable.setPrevious("http://localhost:8080/directories?page=" + (page - 1));
-
-                // Agregar el result al objeto de respuesta
-                paginable.setResults(result);
-
-            } else {
-                return "La página " + page + " no existe";
+    
+        // mostrar los itemsPerPage desde el index adecuado
+        for (int i = startIndex; i < startIndex + itemsPerPage; i++) {
+            if (directories.size() > i) {
+                result.add(directories.get(i));
             }
         }
-
+    
+        // Definir el siguiente
+        if (directories.size() > itemsPerPage * page) {
+            paginable.setNext("http://localhost:8080/directories?page=" + (page + 1));
+        } else {
+            paginable.setNext("No existe");
+        }
+    
+        // Definir el previo
+        if (page > 1) {
+            paginable.setPrevious("http://localhost:8080/directories?page=" + (page - 1));
+        } else {
+            paginable.setPrevious("No existe");
+        }
+    
+        // Agregar el result al objeto de respuesta
+        paginable.setResults(result);
+    
+        if (result.isEmpty()) {
+            return "La página " + page + " no existe";
+        }
+    
         return paginable;
     }
 
