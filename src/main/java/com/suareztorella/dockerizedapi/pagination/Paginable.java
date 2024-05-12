@@ -38,7 +38,7 @@ public class Paginable {
     public List<Directory> getResults() {
         return results;
     }
-    
+
     public void setResults(List<Directory> result) {
         this.results = result;
     }

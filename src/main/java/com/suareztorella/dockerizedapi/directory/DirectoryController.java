@@ -35,54 +35,55 @@ public class DirectoryController {
         // Verificar si la página es menor que 1
         if (page < 1) {
             return "El número de página no puede ser menor que 1";
-        }    
+        }
+        
         // variables de configuracion de paginado
         int itemsPerPage = 4;
         int startIndex = (page - 1) * itemsPerPage;
-    
+
         // Definir objeto de respuesta
         Paginable paginable = new Paginable();
-    
+
         // Consultar todos los directorios
         List<Directory> directories = directoryRepository.findAll();
-    
+
         // Ordenar los directorios por ID
         directories.sort(Comparator.comparing(Directory::getId));
-        
+
         // Definir una lista de resultado
         List<Directory> result = new ArrayList<Directory>();
-    
+
         // Definir el tamaño total
         paginable.setCount(directories.size());
-    
+
         // mostrar los itemsPerPage desde el index adecuado
         for (int i = startIndex; i < startIndex + itemsPerPage; i++) {
             if (directories.size() > i) {
                 result.add(directories.get(i));
             }
         }
-    
+
         // Definir el siguiente
         if (directories.size() > itemsPerPage * page) {
             paginable.setNext("http://localhost:8080/directories?page=" + (page + 1));
         } else {
             paginable.setNext("No existe");
         }
-    
+
         // Definir el previo
         if (page > 1) {
             paginable.setPrevious("http://localhost:8080/directories?page=" + (page - 1));
         } else {
             paginable.setPrevious("No existe");
         }
-    
+
         // Agregar el result al objeto de respuesta
         paginable.setResults(result);
-    
+
         if (result.isEmpty()) {
             return "La página " + page + " no existe";
         }
-    
+
         return paginable;
     }
 
