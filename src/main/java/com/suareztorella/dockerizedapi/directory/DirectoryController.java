@@ -1,5 +1,6 @@
 package com.suareztorella.dockerizedapi.directory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Map;
@@ -14,7 +15,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.suareztorella.dockerizedapi.pagination.Paginable;
 
 @CrossOrigin
 @RestController
@@ -25,8 +29,82 @@ public class DirectoryController {
     private DirectoryRepository directoryRepository;
 
     @GetMapping
-    public List<Directory> getAllDirectories() {
-        return directoryRepository.findAll();
+    public Object getAllDirectories(@RequestParam(name = "page") int page) {
+
+        // variables de configuracion de paginado
+        int itemsPerPage = 4;
+        int aux = 0;
+
+        // Definir objeto de respuesta
+        Paginable paginable = new Paginable();
+
+        // Consultar todos los directorios
+        List<Directory> directories = directoryRepository.findAll();
+
+        // Definir una lista de resultado
+        List<Directory> result = new ArrayList<Directory>();
+
+        // Definir el tamaño total
+        paginable.setCount(directories.size());
+
+        if (page == 1) {
+            // definir un index auxiliar
+            aux = 0;
+
+            // mostrar los itemsPerPage desde el index adecuado
+            for (int i = 0; i < itemsPerPage; i++) {
+                if (directories.size() > aux) {
+                    result.add(directories.get(aux));
+                    aux++;
+                }
+            }
+
+            // Definir el siguiente
+            if (directories.size() > itemsPerPage * page) {
+                paginable.setNext("http://localhost:8080/directories?page=" + (page + 1));
+            } else {
+                paginable.setNext("No existe");
+            }
+
+            // Definir el previo
+            paginable.setPrevious("No existe");
+
+            // Agregar el result al objeto de respuesta
+            paginable.setResults(result);
+
+        } else {
+            if (directories.size() > itemsPerPage * (page - 1)) {
+
+                // definir un index auxiliar
+                aux = itemsPerPage * (page - 1);
+
+                // mostrar los itemsPerPage desde el index adecuado
+                for (int i = 0; i < itemsPerPage; i++) {
+                    if (directories.size() > aux) {
+                        result.add(directories.get(aux));
+                        aux++;
+                    }
+                }
+
+                // Definir el siguiente
+                if (directories.size() > itemsPerPage * page) {
+                    paginable.setNext("http://localhost:8080/directories?page=" + (page + 1));
+                } else {
+                    paginable.setNext("No existe");
+                }
+
+                // Definir el previo
+                paginable.setPrevious("http://localhost:8080/directories?page=" + (page - 1));
+
+                // Agregar el result al objeto de respuesta
+                paginable.setResults(result);
+
+            } else {
+                return "La página " + page + " no existe";
+            }
+        }
+
+        return paginable;
     }
 
     @GetMapping("/{id}")
@@ -49,7 +127,7 @@ public class DirectoryController {
         try {
             directoryRepository.findById(id).get();
 
-            // Declare the new modified directory
+            // Declarar el nuevo directorio modificado
             Directory moded_directory = new Directory();
             moded_directory.setId(id);
             moded_directory.setName(directory.getName());
