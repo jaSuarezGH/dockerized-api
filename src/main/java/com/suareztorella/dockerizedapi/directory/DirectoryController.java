@@ -1,6 +1,7 @@
 package com.suareztorella.dockerizedapi.directory;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Map;
@@ -45,6 +46,9 @@ public class DirectoryController {
         // Consultar todos los directorios
         List<Directory> directories = directoryRepository.findAll();
     
+        // Ordenar los directorios por ID
+        directories.sort(Comparator.comparing(Directory::getId));
+        
         // Definir una lista de resultado
         List<Directory> result = new ArrayList<Directory>();
     
