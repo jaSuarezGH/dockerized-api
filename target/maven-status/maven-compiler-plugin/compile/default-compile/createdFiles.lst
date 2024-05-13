@@ -1,6 +1,0 @@
-com\suareztorella\dockerizedapi\status\StatusController.class
-com\suareztorella\dockerizedapi\pagination\Paginable.class
-com\suareztorella\dockerizedapi\directory\DirectoryRepository.class
-com\suareztorella\dockerizedapi\directory\DirectoryController.class
-com\suareztorella\dockerizedapi\directory\Directory.class
-com\suareztorella\dockerizedapi\DockerizedApiApplication.class
