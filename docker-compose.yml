@@ -8,9 +8,9 @@ services:
     ports:
       - 8080:8080
     environment:
-      - DATABASE_URL=jdbc:postgresql://postgresql_db:5432/postgres
-      - DATABASE_USERNAME=postgres
-      - DATABASE_PASSWORD=postgres
+      - DATABASE_URL=jdbc:postgresql://postgresql_db:5432/${ENV_DATABASE_NAME}
+      - DATABASE_USERNAME=${ENV_DATABASE_USERNAME}
+      - DATABASE_PASSWORD=${ENV_DATABASE_PASSWORD}
     depends_on:
       - postgresql_db
     networks:
@@ -21,9 +21,9 @@ services:
     ports:
       - 5432:5432
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres
+      POSTGRES_USER: ${ENV_DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${ENV_DATABASE_PASSWORD}
+      POSTGRES_DB: ${ENV_DATABASE_NAME}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
