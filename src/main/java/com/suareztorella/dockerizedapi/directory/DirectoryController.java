@@ -30,7 +30,7 @@ public class DirectoryController {
     private DirectoryRepository directoryRepository;
 
     @GetMapping
-    public Object getAllDirectories(@RequestParam(name = "page") int page) {
+    public Object getAllDirectories(@RequestParam(name = "page", defaultValue = "1") int page) {
 
         // Verificar si la página es menor que 1
         if (page < 1) {
@@ -67,14 +67,14 @@ public class DirectoryController {
         if (directories.size() > itemsPerPage * page) {
             paginable.setNext("http://localhost:8080/directories?page=" + (page + 1));
         } else {
-            paginable.setNext("No existe");
+            paginable.setNext(null);
         }
 
         // Definir el previo
         if (page > 1) {
             paginable.setPrevious("http://localhost:8080/directories?page=" + (page - 1));
         } else {
-            paginable.setPrevious("No existe");
+            paginable.setPrevious(null);
         }
 
         // Agregar el result al objeto de respuesta
